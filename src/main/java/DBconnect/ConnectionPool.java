@@ -14,7 +14,7 @@ public class ConnectionPool {
 		
 		system_config.R_sysConfig conf = new R_sysConfig();
 		Properties prog = conf.get_prog();
-		String Database = "jdbc:mysql://localhost:3306/"+prog.getProperty("database");
+		String Database = prog.getProperty("database");
 		String user = prog.getProperty("dbuser");
 		String password = prog.getProperty("dbpassword");
 		

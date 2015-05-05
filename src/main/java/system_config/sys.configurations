@@ -1,7 +1,7 @@
 #Fri Jan 17 22:37:45 MYT 2014
 
 #Mysql database configuarations 
-database=visualizer
+database=jdbc:mysql://localhost:3306/visualizer
 dbuser=root
 dbpassword=
 
