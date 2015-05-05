@@ -8,10 +8,10 @@ function c3_edge(tag,typ){
 		y_lbl = 'Clustering Coefficient';
 	}else if(typ==3){
 		file = 'csv/comTraid_overall_data.csv';
-		y_lbl = 'Number of Edges';
+		y_lbl = 'Number completed triads';
 	}else if(typ==4){
 		file = 'csv/IncomTraid_overall_data.csv';
-		y_lbl = 'Number of Edges';
+		y_lbl = 'Number of incompleted triads';
 	}
 	
 var chart = c3.generate({
