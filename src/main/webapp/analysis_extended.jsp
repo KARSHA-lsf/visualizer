@@ -377,7 +377,20 @@ select {
 						</center>
 						<div id="hIndex" height:400px">
 							<script type="text/javascript">
-							c3_hIndex('#hIndex');
+							c3_hIndex('#hIndex',1);
+							</script>
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-lg-12" style="border: 2px solid;">
+						<center>
+							<h3 style="z-index: 9;">H-Path Index Comparison</h3>
+						</center>
+						<div id="hpathIndex" height:400px">
+							<script type="text/javascript">
+							c3_hIndex('#hpathIndex',2);
 							</script>
 						</div>
 					</div>

@@ -120,7 +120,7 @@ function c3_barGrp(tag,typ){
 	 
 	}//]]> 
 
-function c3_hIndex(tag){
+function c3_hIndex(tag,file_set){
 	
 	var nodes = [
 	            "AAREAL.BANK.AG",
@@ -155,8 +155,16 @@ function c3_hIndex(tag){
 	            ];
 	
 	var file,y_lbl;
-	file = 'csv/Hindex_year.csv';
-	y_lbl = 'H-Index';
+	
+	if(file_set==1){
+		file = 'csv/Hindex_year.csv';
+		y_lbl = 'H-Index';
+	}else if(file_set==2){
+		file = 'csv/HpathIndex.csv';
+		y_lbl = 'H-Path Index';
+	}
+	
+	
 	
 var chart = c3.generate({
 	bindto: tag,

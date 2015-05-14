@@ -587,7 +587,7 @@
                                         <script>
                                             $("#traces").click(function () {
                                                 var width = 900, height = 950;
-                                                                                var obj = newObject();
+                                                                                var obj = new Object();
                                                 var url = "dataGet?Q=<%=request.getParameter("Q")%>"
                                                 //obj.nodes=nodes;	
                                                 //access json file using ajax and put the json content ito javascript object

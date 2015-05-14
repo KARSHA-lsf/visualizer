@@ -529,9 +529,8 @@ public class PostDataServ extends HttpServlet {
 					//connected_nodes_out = DirectedGraphDemoServ.Bonacich(gg, nodeSet,connected_nodes_out,1,2);
 					//System.out.println(counting+" :"+connected_nodes_in+" "+connected_nodes_in.size()+" : "+connected_nodes_out.size()+" :"+connected_nodes_out);
 					for (int k = 0; k < 29; k++) {
-						ArrayList<Node> connected_nodes_in1 = new ArrayList<Node>();
-						ArrayList<Node> connected_nodes_in = DirectedGraphDemoServ.Bonacich(gg, nodeSet,connected_nodes_in1,k,1);
-						out.print(connected_nodes_in.size()+",");
+						int a = DirectedGraphDemoServ.Bonacich(gg, nodeSet,k,2);
+						out.print(a+",");
 					}
 					out.println();
 					
