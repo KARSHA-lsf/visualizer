@@ -17,14 +17,14 @@ public class ConnectionPool {
 		/*String Database = prog.getProperty("database");
 		String user = prog.getProperty("dbuser");
 		String password = prog.getProperty("dbpassword");*/
-	
+/*	
 		String Database = "jdbc:mysql://localhost:3306/visualizer";
 		String user = "root";
 		String password = "";
-                
-           /*     String Database = "jdbc:mysql://clipdb-sm3.umiacs.umd.edu:3306/Karsha_visualizer";
+*/              
+                String Database = "jdbc:mysql://clipdb-sm3.umiacs.umd.edu:3306/Karsha_visualizer";
 		String user = "karsha";
-		String password = "em$.N0w";*/
+		String password = "em$.N0w";
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
