@@ -962,47 +962,54 @@ public static void outdegree_get(DirectedGraph<Node, DefaultEdge> graph, Node[] 
 	
 }
 
-public static int Bonacich(DirectedGraph<Node, DefaultEdge> graph, Node[] nodes, int node,int pattern) {
+public static ArrayList<Integer> Bonacich(DirectedGraph<Node, DefaultEdge> graph, Node[] nodes,int pattern,ArrayList<Integer>data) {
 	 /*pattern = 1 -> indegree 
 	 pattern = 2 -> outdegree*/
-	ArrayList<Node> node_select = new ArrayList<Node>(); 
+	
 	ArrayList<Node> node_select_2 = new ArrayList<Node>();	
 	ArrayList<Node> dup_filter = new ArrayList<Node>();		 
-	int i = node,path_count =0;
 	
-	if(pattern==1){
-		for (int j = 0; j < nodes.length; j++) {
-			if(graph.containsEdge(nodes[j],nodes[i])){
-				node_select.add(nodes[j]);
-			}
-		}
-		
-		for (int j = 0; j < node_select.size(); j++) {
-			for (int j2 = 0; j2 < nodes.length; j2++) {
-				if(graph.containsEdge(nodes[j2],node_select.get(j))&&j2!=i){
-					path_count++;
+	
+	for (int i = 0; i <nodes.length; i++){
+		int path_count_2 =0,path_count_1 =0;
+		ArrayList<Node> node_select = new ArrayList<Node>(); 
+			if(pattern==1){
+				for (int j = 0; j < nodes.length; j++) {
+					if(graph.containsEdge(nodes[j],nodes[i])){
+						node_select.add(nodes[j]);
+						path_count_1++;
+					}
 				}
-			}
-		}
-		
-		
-	}else {
-		for (int j = 0; j < nodes.length; j++) {
-			if(graph.containsEdge(nodes[i],nodes[j])){
-				node_select.add(nodes[j]);
-			}
-		}
-		for (int j = 0; j < node_select.size(); j++) {
-			for (int j2 = 0; j2 < nodes.length; j2++) {
-				if(graph.containsEdge(node_select.get(j),nodes[j2])&&j2!=i){
-					path_count++;
+				
+				for (int j = 0; j < node_select.size(); j++) {
+					for (int j2 = 0; j2 < nodes.length; j2++) {
+						if(graph.containsEdge(nodes[j2],node_select.get(j))&&j2!=i){
+							path_count_2++;
+						}
+					}
 				}
+				
+				
+			}else {
+				for (int j = 0; j < nodes.length; j++) {
+					if(graph.containsEdge(nodes[i],nodes[j])){
+						node_select.add(nodes[j]);
+						path_count_1++;
+					}
+				}
+				for (int j = 0; j < node_select.size(); j++) {
+					for (int j2 = 0; j2 < nodes.length; j2++) {
+						if(graph.containsEdge(node_select.get(j),nodes[j2])&&j2!=i){
+							path_count_2++;
+						}
+					}
+				}
+				
 			}
-		}
-		
+			data.add(path_count_2+path_count_1);
 	}
-	
-		return path_count;
+		
+		return data;
 	
 }
 
