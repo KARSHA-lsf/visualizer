@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -477,7 +478,7 @@ public class PostDataServ extends HttpServlet {
 			ArrayList<Double> cc_count_arry = new ArrayList<Double>();
 			ArrayList<Integer> indegree = new ArrayList<Integer>();
 			ArrayList<Integer> outdegree = new ArrayList<Integer>();
-			
+			int hindex_row[][] = new int[82][29];
 			
 			PrintWriter out = response.getWriter();
 			ObjectMapper mapper = new ObjectMapper();
@@ -519,23 +520,23 @@ public class PostDataServ extends HttpServlet {
 							.InCompleteTriad_count(gg, nodeSet));
 					cc_count_arry.add(DirectedGraphDemoServ.clusteringCoefficient(
 							gg, nodeSet, linkSetCount));
-					
+					*/
 					DirectedGraphDemoServ.indegree_get(gg, nodeSet,indegree);
-					DirectedGraphDemoServ.outdegree_get(gg, nodeSet,outdegree);*/
+					DirectedGraphDemoServ.outdegree_get(gg, nodeSet,outdegree);
 					
 					ArrayList<Node> connected_nodes_out = new ArrayList<Node>();
 					
 					
 					//connected_nodes_out = DirectedGraphDemoServ.Bonacich(gg, nodeSet,connected_nodes_out,1,2);
 					//System.out.println(counting+" :"+connected_nodes_in+" "+connected_nodes_in.size()+" : "+connected_nodes_out.size()+" :"+connected_nodes_out);
-					for (int k = 0; k < 29; k++) {
-						int a = DirectedGraphDemoServ.Bonacich(gg, nodeSet,k,2);
+					/*for (int k = 0; k < 29; k++) {
+						int a = DirectedGraphDemoServ.Bonacich(gg, nodeSet,k,1);
 						out.print(a+",");
 					}
 					out.println();
 					
 					
-					counting++;
+					counting++;*/
 					
 				}
 			}
@@ -546,20 +547,26 @@ public class PostDataServ extends HttpServlet {
 			//out.println("incompleted traid : " + incompleted_traid_count_arry);
 			//out.println("cc value : " + cc_count_arry);
 			//out.println("outdegree array length :"+outdegree.size());
-			int counter =1;
+			
+			int counter =0;
 			for (int i = 0; i < outdegree.size(); i++) {
-				
-				if(counter%29==0){
-					out.println(outdegree.get(i)+",");
-				}else{
-					out.print(outdegree.get(i)+",");
-				}
-				counter++;
+				hindex_row[counter][i%29]=outdegree.get(i);
+					//out.println(outdegree.get(i)+",");
+					if(i%29 ==0 & i!=0)counter++;
 			}
+			
 			
 			//out.println("outdegree :"+outdegree);
 			
+			data_manipulation dmap = new data_manipulation();
+			int [] hindex_inpath = dmap.H_index(hindex_row);
 			
+			for (int i = 0; i < hindex_row.length; i++) {
+				for (int j = 0; j < hindex_row[0].length; j++) {
+					out.print(hindex_row[i][j]+",");
+				}
+				out.println();
+			}
 			
 			
 			
@@ -588,7 +595,127 @@ public class PostDataServ extends HttpServlet {
 			out.println("cc value : " + cc_count_arry);
 */
 			out.close();
+		}else if(userPath.equals("/hindex")){
+			logger.info("userPath is " + userPath);
+			ArrayList<Integer> indegree = new ArrayList<Integer>();
+			ArrayList<Integer> outdegree = new ArrayList<Integer>();
+			ArrayList<Integer> hindex_Indegre = new ArrayList<Integer>();
+			ArrayList<Integer> hindex_outdegre = new ArrayList<Integer>();
+			ArrayList<Integer> hindex_Inpath = new ArrayList<Integer>();
+			ArrayList<Integer> hindex_outpath = new ArrayList<Integer>();
+			
+			int hr_indegree[][] = new int[82][29];
+			int hr_outdegree[][] = new int[82][29];
+			int hr_inpath[][] = new int[82][29];
+			int hr_outpath[][] = new int[82][29];
+			
+			PrintWriter out = response.getWriter();
+			ObjectMapper mapper = new ObjectMapper();
+			response.setContentType("application/json");
+			DirectedGraph<Node, DefaultEdge> gg;
+			
+			DBconnect.ConnectionPool con = new ConnectionPool();
+			connect = con.getConnection();
+			DBconnect.QueryDB qdb = new QueryDB();
+			String Q = null,Query = null;;
+			
+			for (int i = 0; i < 29; i++) {
+				out.print(i+",");
+			}
+			out.println();
+			
+			for (int i = 2003; i < 2011; i++) {
+				for (int j = 1; j < 13; j++) {
+					if((i==2003 & j<7)|(i==2010 & j>4)) continue;
+						if(j<10){
+							Q = i+"-0"+j;
+						}else{
+							Q = i+"-"+j;
+						}
+					
+					Query = "SELECT `source`,`target` FROM `emid_all_data` WHERE `"+Q+"`=1";
+					String q_gt = qdb.getFromDB(Query, connect).toString();
+					
+					Links[] linkSetCount = mapper.readValue(q_gt, Links[].class);
+					
+					
+					gg = DirectedGraphDemoServ.createHrefGraph(nodeSet, linkSetCount);
+					
+					DirectedGraphDemoServ.indegree_get(gg, nodeSet,indegree);
+					DirectedGraphDemoServ.outdegree_get(gg, nodeSet,outdegree);
+				
+					DirectedGraphDemoServ.Bonacich(gg, nodeSet,1,hindex_Inpath);
+					DirectedGraphDemoServ.Bonacich(gg, nodeSet,2,hindex_outpath);
+				
+				}
+			}
+			int counter =0;
+			for (int i = 0; i < outdegree.size(); i++) {
+				hr_indegree[counter][i%29]=indegree.get(i);
+				hr_outdegree[counter][i%29]=outdegree.get(i);
+				hr_inpath[counter][i%29]=hindex_Inpath.get(i);
+				hr_outpath[counter][i%29]=hindex_outpath.get(i);
+					//out.println(outdegree.get(i)+",");
+					if(i%29 ==0 & i!=0)counter++;
+			}
+			
+			
+			//out.println("outdegree :"+outdegree);
+			
+			data_manipulation dmap = new data_manipulation();
+			int [] hindex_ind = dmap.H_index(hr_indegree);
+			int [] hindex_outd = dmap.H_index(hr_outdegree);
+			int [] hindex_inp = dmap.H_index(hr_inpath);
+			int [] hindex_outp = dmap.H_index(hr_outpath);
+			
+			out.print("H indegree :");
+				for (int i = 0; i < hindex_outd.length; i++) {
+					out.print(hindex_ind[i]+",");
+				}
+			out.println();
+			out.print("H in path  :");
+			for (int i = 0; i < hindex_outd.length; i++) {
+				out.print(hindex_inp[i]+",");
+			}
+			out.println();
+			out.print("H outdegree :");
+			for (int i = 0; i < hindex_outd.length; i++) {
+				out.print(hindex_outd[i]+",");
+			}
+			out.println();
+			out.print("H out path  :");
+			for (int i = 0; i < hindex_outd.length; i++) {
+				out.print(hindex_outp[i]+",");
+			}
+			
+			
+			
+		/*	
+			
+			for (int i = 1; i < 6; i++) {
+				Links[] link = DirectedGraphDemoServ.link_filter(i, linkSet);
+				edges_count_arry.add(link.length);
 
+				DirectedGraph<Node, DefaultEdge> gg = DirectedGraphDemoServ
+						.createHrefGraph(nodeSet,
+								DirectedGraphDemoServ.link_filter(i, linkSet));
+
+				completed_traid_count_arry.add(DirectedGraphDemoServ
+						.CompleteTriad_count(gg, nodeSet));
+				incompleted_traid_count_arry.add(DirectedGraphDemoServ
+						.InCompleteTriad_count(gg, nodeSet));
+				cc_count_arry.add(DirectedGraphDemoServ.clusteringCoefficient(
+						gg, nodeSet, linkSet));
+			}
+
+			out.println("edges count : " + edges_count_arry);
+			out.println("completed traid : " + completed_traid_count_arry);
+			out.println("incompleted traid : " + incompleted_traid_count_arry);
+			out.println("cc value : " + cc_count_arry);
+*/
+			out.close();
+			
+			
 		} else if (userPath.equals("/get_degrees")) {
 			/*logger.info("userPath is " + userPath);
 			ArrayList<Integer> degrees = new ArrayList<Integer>();
