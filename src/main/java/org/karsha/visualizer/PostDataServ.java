@@ -604,7 +604,7 @@ public class PostDataServ extends HttpServlet {
 					out.print(Hdata_out_yr[i]+",");
 			}
 			out.println();
-			out.print("quartelly Houtdegree :");
+			out.print("quartelly Hindegree :");
 			for (int i = 0; i < Hdata_in_q.length; i++) {
 					out.print(Hdata_in_q[i]+",");
 			}
