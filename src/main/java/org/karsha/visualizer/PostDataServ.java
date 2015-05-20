@@ -533,6 +533,91 @@ public class PostDataServ extends HttpServlet {
 			out.println("cc value : " + cc_count_arry);
 
 			out.close();
+			
+		}else if(userPath.equals("/hindex")){
+			logger.info("userPath is " + userPath);
+						
+			PrintWriter out = response.getWriter();
+			
+			DBconnect.ConnectionPool conC = new ConnectionPool();
+			DirectedGraphDemoServ dan = new DirectedGraphDemoServ();
+
+			connect = conC.getConnection();
+			DBconnect.QueryDB qdbC = new QueryDB();
+			String Query = null,q_gt=null;
+			ObjectMapper mapper = new ObjectMapper();
+			response.setContentType("application/json");
+			
+			ArrayList<Integer> indegre_store_yr = new ArrayList<Integer>();
+			ArrayList<Integer> outdegre_store_yr = new ArrayList<Integer>();
+			ArrayList<Integer> indegre_store_q = new ArrayList<Integer>();
+			ArrayList<Integer> outdegre_store_q = new ArrayList<Integer>();
+			
+			
+			for (int year = 2005; year <2013 ; year++) {
+				Query = "select source,target from year where p_value_" + year
+						+ "=1";
+				q_gt = qdbC.getFromDB(Query, connect).toString();
+				linkSet = mapper.readValue(q_gt, Links[].class);
+				g = DirectedGraphDemoServ.createHrefGraph(nodeSet, linkSet);
+				
+				ArrayList<Integer> indegree = DirectedGraphDemoServ.degree_get(g, nodeSet,1);
+				ArrayList<Integer> outdegree= DirectedGraphDemoServ.degree_get(g, nodeSet,2);
+				
+					for (int i = 0; i < indegree.size(); i++) {
+						indegre_store_yr.add(indegree.get(i));
+						outdegre_store_yr.add(outdegree.get(i));
+					}
+				
+					for (int Q = 1; Q <=4; Q++) {
+						Query = "select  source,target from quarter where p_value_"
+								+ year + "_Q" + Q + "=1";
+						
+						q_gt = qdbC.getFromDB(Query, connect).toString();
+						linkSet = mapper.readValue(q_gt, Links[].class);
+						g = DirectedGraphDemoServ.createHrefGraph(nodeSet, linkSet);
+						ArrayList<Integer> indegree_q = DirectedGraphDemoServ.degree_get(g, nodeSet,1);
+						ArrayList<Integer> outdegree_q= DirectedGraphDemoServ.degree_get(g, nodeSet,2);
+						
+						for (int i = 0; i < indegree.size(); i++) {
+							indegre_store_q.add(indegree_q.get(i));
+							outdegre_store_q.add(outdegree_q.get(i));
+						}
+						
+					}
+					
+			}
+			
+			data_manipulation dmap = new data_manipulation();
+			int Hdata_in_yr[] = dmap.H_index(dmap.hindex_preprocess(8,nodeSet.length,indegre_store_yr));
+			int Hdata_out_yr[] = dmap.H_index(dmap.hindex_preprocess(8,nodeSet.length,outdegre_store_yr));
+			int Hdata_in_q[] = dmap.H_index(dmap.hindex_preprocess(8,nodeSet.length,indegre_store_q));
+			int Hdata_out_q[] = dmap.H_index(dmap.hindex_preprocess(8,nodeSet.length,outdegre_store_q));
+			
+			out.print("annually Hindegree  :");
+			for (int i = 0; i < Hdata_in_yr.length; i++) {
+					out.print(Hdata_in_yr[i]+",");
+			}
+			out.println();
+			out.print("annually Houtdegree :");
+			for (int i = 0; i < Hdata_out_yr.length; i++) {
+					out.print(Hdata_out_yr[i]+",");
+			}
+			out.println();
+			out.print("quartelly Houtdegree :");
+			for (int i = 0; i < Hdata_in_q.length; i++) {
+					out.print(Hdata_in_q[i]+",");
+			}
+			out.println();
+			out.print("quartelly Houtdegree :");
+			for (int i = 0; i < Hdata_out_q.length; i++) {
+					out.print(Hdata_out_q[i]+",");
+			}
+			out.println();
+			
+			
+			out.close();
+				
 
 		} else if (userPath.equals("/get_degrees")) {
 			logger.info("userPath is " + userPath);
@@ -547,7 +632,7 @@ public class PostDataServ extends HttpServlet {
 								DirectedGraphDemoServ.link_filter(i, linkSet));
 				// out.println(i+" : "+DirectedGraphDemoServ.degree_get(gg,
 				// nodeSet));
-				degrees = DirectedGraphDemoServ.degree_get(gg, nodeSet);
+				degrees = DirectedGraphDemoServ.degree_get(gg, nodeSet,1);
 				for (int j = 0; j < degrees.size(); j++) {
 					if (j == degrees.size() - 1)
 						out.print(degrees.get(j));
@@ -556,11 +641,7 @@ public class PostDataServ extends HttpServlet {
 
 				}
 				out.println();
-				/*
-				 * DBconnector dbCon = new DBconnector(); try {
-				 * dbCon.dbConnect(); } catch (Exception e) { // TODO
-				 * Auto-generated catch block e.printStackTrace(); }
-				 */
+				
 			}
 
 		} else if (userPath.equals("/ReadJson")) {
