@@ -492,25 +492,40 @@ public class PostDataServ extends HttpServlet {
 
 			PrintWriter out = response.getWriter();
 			
-			
-			
-			
+			DBconnect.ConnectionPool conC = new ConnectionPool();
+			DirectedGraphDemoServ dan = new DirectedGraphDemoServ();
 
-			for (int i = 1; i < 6; i++) {
-				Links[] link = DirectedGraphDemoServ.link_filter(i, linkSet);
-				edges_count_arry.add(link.length);
-
-				DirectedGraph<Node, DefaultEdge> gg = DirectedGraphDemoServ
-						.createHrefGraph(nodeSet,
-								DirectedGraphDemoServ.link_filter(i, linkSet));
-
-				completed_traid_count_arry.add(DirectedGraphDemoServ
-						.CompleteTriad_count(gg, nodeSet));
-				incompleted_traid_count_arry.add(DirectedGraphDemoServ
-						.InCompleteTriad_count(gg, nodeSet));
-				cc_count_arry.add(DirectedGraphDemoServ.clusteringCoefficient(
-						gg, nodeSet, linkSet));
-			}
+			connect = conC.getConnection();
+			DBconnect.QueryDB qdbC = new QueryDB();
+			String Query = null,q_gt=null;
+			ObjectMapper mapper = new ObjectMapper();
+			response.setContentType("application/json");
+		
+			for (int year = 2005; year <2013 ; year++) {
+				Query = "select source,target from year where p_value_" + year
+						+ "=1";
+				q_gt = qdbC.getFromDB(Query, connect).toString();
+				linkSet = mapper.readValue(q_gt, Links[].class);
+				g = DirectedGraphDemoServ.createHrefGraph(nodeSet, linkSet);
+				edges_count_arry.add(linkSet.length);
+				completed_traid_count_arry.add(DirectedGraphDemoServ.CompleteTriad_count(g,nodeSet));
+				incompleted_traid_count_arry.add(DirectedGraphDemoServ.InCompleteTriad_count(g,nodeSet));
+				cc_count_arry.add(DirectedGraphDemoServ.clusteringCoefficient(g, nodeSet, linkSet));
+				
+				for (int Q = 1; Q <=4; Q++) {
+					Query = "select  source,target from quarter where p_value_"
+							+ year + "_Q" + Q + "=1";
+					
+					q_gt = qdbC.getFromDB(Query, connect).toString();
+					linkSet = mapper.readValue(q_gt, Links[].class);
+					g = DirectedGraphDemoServ.createHrefGraph(nodeSet, linkSet);
+					edges_count_arry.add(linkSet.length);
+					completed_traid_count_arry.add(DirectedGraphDemoServ.CompleteTriad_count(g,nodeSet));
+					incompleted_traid_count_arry.add(DirectedGraphDemoServ.InCompleteTriad_count(g,nodeSet));
+					cc_count_arry.add(DirectedGraphDemoServ.clusteringCoefficient(g, nodeSet, linkSet));
+				}
+				
+			}		
 
 			out.println("edges count : " + edges_count_arry);
 			out.println("completed traid : " + completed_traid_count_arry);

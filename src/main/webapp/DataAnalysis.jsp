@@ -117,6 +117,8 @@
 								class="fa fa-fw fa-file"></i> H-Index Analysis</a></li>
 						<li><a href="presentation.jsp"><i
 								class="fa fa-fw fa-file"></i>Presentation</a></li>
+						<li><a href="AboutUs.jsp"><i
+								class="fa fa-fw fa-file"></i>About Us</a></li>
 					</ul>
 				</div>
 			</div>
