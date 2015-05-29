@@ -119,6 +119,12 @@ public static List<Links> findHighInDegree(DirectedGraph<Node, DefaultEdge> grap
  * 
  * http://jgrapht.org/javadoc/  
  * */
+
+public static int node_degree(DirectedGraph<Node, DefaultEdge> graph, Node nodes,int in_out) {
+	if(in_out==0)return graph.inDegreeOf(nodes);
+	else return graph.outDegreeOf(nodes);
+	
+}
 public static List<Links> findHighOutDegree(
 			DirectedGraph<Node, DefaultEdge> graph, Node[] nodes) {
 		log.log(Level.SEVERE, "findHighOutDegree()  Data:{0},{1}",

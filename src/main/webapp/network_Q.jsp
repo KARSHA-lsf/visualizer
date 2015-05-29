@@ -630,6 +630,7 @@
                                                         success: function (data) {
                                                             obj.link = data.links;
                                                             obj.node = data.nodes;
+                                                            //console.log(data.nodes[2]);
                                                         },
                                                         error: function (data,
                                                                 error) {

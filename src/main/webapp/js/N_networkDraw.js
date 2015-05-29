@@ -62,7 +62,8 @@ function N_OriginalNetworkGraph(nodes,links,svg1,width,height){
       .call(force.drag);  // enable dragging
 
   node.append("circle") // append cycle for eachnode with text
-      .attr("r",8);
+     // .attr("r",8);
+        .attr("r",function(d) { return d.indegree+5});
 
   node.append("text")
       .attr("dx", 12)
