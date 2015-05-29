@@ -77,6 +77,8 @@ public class PostDataServ extends HttpServlet {
 
 		try {
 			nodeSet = mapper.readValue(q_gt, Node[].class);
+			
+			
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -159,6 +161,12 @@ public class PostDataServ extends HttpServlet {
 				JsonObject Obj = new JsonObject();
 				JsonElement links = gson.toJsonTree(linkSet);
 				JsonElement nodes = gson.toJsonTree(nodeSet);
+				
+				for (int i = 0; i < nodeSet.length; i++) {
+					nodeSet[i].indegree = DirectedGraphDemoServ.node_degree(g,nodeSet[i], 0);
+					nodeSet[i].outdegree = DirectedGraphDemoServ.node_degree(g,nodeSet[i], 1);
+				}
+				
 				Obj.add("links", links);
 				Obj.add("nodes", nodes);
 				out.println(Obj.toString());

@@ -13,6 +13,8 @@ public class Node {
 	String nodeid;
 	String name;
 	String description;
+	int indegree;
+	int outdegree;
 	
 	public String getGroup() {
 		return group;
@@ -37,6 +39,18 @@ public class Node {
 	}
 	public void setdescription(String description) {
 		this.description = description;
+	}
+	public int getIndegree() {
+		return indegree;
+	}
+	public void setIndegree(String group) {
+		this.indegree = indegree;
+	}
+	public int getOutdegree() {
+		return outdegree;
+	}
+	public void setOutdegree(String group) {
+		this.outdegree = outdegree;
 	}
 	
 	@Override
